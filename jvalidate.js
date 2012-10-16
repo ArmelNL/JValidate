@@ -61,7 +61,7 @@ by Armel van Ravels and Dominique de Brabander
 			if(isFunction(fn)){
 				defaultError = fn;
 				for(rule in rules) {
-					methods.setSuccessCallback(rule, fn);
+					methods.setErrorCallback(rule, fn);
 				}
 			}else{
 				$.error(' JValidate, setDefaultErrorCallback: Parameter must be of type \'function\' ');
