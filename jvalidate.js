@@ -8,8 +8,6 @@
 
 by Armel van Ravels and Dominique de Brabander
 
-hallo
-
 */
 (function( $ ){
 
