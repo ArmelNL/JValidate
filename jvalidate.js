@@ -10,35 +10,64 @@ by Armel van Ravels and Dominique de Brabander
 
 */
 (function( $ ){
+	var defaultError;
+	var defaultSucces;
+
+	/*
+	_.isFunction from underscore.js
+	*/
+	var isFunction = function(obj) {
+		return !!(obj && obj.constructor && obj.call && obj.apply); 
+	};
 
 	var defaultRules = {
 		required : {
-			'validateFunction': function( value ){ return value.length; },
-			'errorCallback' : function(){},
-			'successCallback': function(){}
+			'validateFunction' : function( value ){ return value.length; },
+			'errorCallback' : $.noop,
+			'successCallback': $.noop
 		},
 		email : {
-			'validateFunction' : function(value){
+			'validateFunction' : function( value ){
 				return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
 			},
-			'errorCallback' : function(){},
-			'successCallback' : function(){}
+			'errorCallback' : $.noop,
+			'successCallback' : $.noop
 		},
 		url : {
-			'validateFunction' : function(value){
+			'validateFunction' : function( value ){
 				return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);
 			},
-			'errorCallback' : function(){},
-			'successCallback' : function(){}
+			'errorCallback' : $.noop,
+			'successCallback' : $.noop
 		}
 	}
+
 	var rules = {};
 	var methods = {
 		init : function( options ) { 
 			rules = defaultRules;
 		},
-		validate:function( options ){
-
+		setDefaultSuccessCallback : function( fn ) {
+			if(isFunction(fn)){
+				defaultSucces = fn;
+				for(rule in rules) {
+					methods.setSuccessCallback(rule, fn);
+				}	
+			}else{
+				$.error(' JValidate, setDefaultSuccessCallback: Parameter must be of type \'function\' ');
+			}
+		},
+		setDefaultErrorCallback : function( fn ) {
+			if(isFunction(fn)){
+				defaultError = fn;
+				for(rule in rules) {
+					methods.setSuccessCallback(rule, fn);
+				}
+			}else{
+				$.error(' JValidate, setDefaultErrorCallback: Parameter must be of type \'function\' ');
+			}
+		},
+		validate : function( options ) {
 			$(this).find("input, textarea").each(function(index, element){
 				for (prop in rules)
 				{
@@ -58,19 +87,16 @@ by Armel van Ravels and Dominique de Brabander
 			rules[name].errorCallback = errorCallback;
 		},
 		setSuccessCallback : function(name, successCallback){
-
 			rules[name].successCallback = successCallback;
 		},
 		addRule: function(name, validateFunction, errorCallback, successCallback){
 			var rule = {};
 			rule[name] = {
 				'validateFunction':validateFunction,
-				'errorCallback':errorCallback || $.noop(), 
-				'successCallback':successCallback || $.noop()
+				'errorCallback': errorCallback || (defaultError || $.noop), 
+				'successCallback': successCallback || (defaultSucces || $.noop)
 			};
-
 			rules = $.extend(rule,rules);
-
 		},
 		getRules : function(){
 			return rules;
@@ -88,9 +114,7 @@ by Armel van Ravels and Dominique de Brabander
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.jvalidate' );
 		}    
-
 	};
-
 })( jQuery );
 
 
