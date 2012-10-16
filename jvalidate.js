@@ -93,8 +93,8 @@ by Armel van Ravels and Dominique de Brabander
 			var rule = {};
 			rule[name] = {
 				'validateFunction':validateFunction,
-				'errorCallback': errorCallback || (defaultError || $.noop), 
-				'successCallback': successCallback || (defaultSucces || $.noop)
+				'errorCallback': errorCallback || defaultError || $.noop, 
+				'successCallback': successCallback || defaultSucces || $.noop
 			};
 			rules = $.extend(rule,rules);
 		},
