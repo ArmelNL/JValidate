@@ -8,14 +8,14 @@ $(document).ready(function(){
         $(item).removeClass("green").addClass("red");
     };
 
-    $().jvalidate('init');  //initializing default validating rules
-    $().jvalidate('setDefaultSuccessCallback', setGreen); //default success setting 
-    $().jvalidate('setDefaultErrorCallback', setRed);     //defailt error setting
+    $().JValidate('init');  //initializing default validating rules
+    $().JValidate('setDefaultSuccessCallback', setGreen); //default success setting 
+    $().JValidate('setDefaultErrorCallback', setRed);     //defailt error setting
 
-    $().jvalidate('addRule', 'numeric', function(n){return !isNaN(parseFloat(n)) && isFinite(n);});
+    $().JValidate('addRule', 'numeric', function(n){return !isNaN(parseFloat(n)) && isFinite(n);});
 
     $('a.naam').click(function(){
-        $('form').jvalidate('validate'); //run validation
+        $('form').JValidate('validate'); //run validation
     });
 
 });
