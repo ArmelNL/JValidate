@@ -13,13 +13,6 @@ by Armel van Ravels and Dominique de Brabander
 	var defaultError;
 	var defaultSucces;
 
-	/*
-	_.isFunction from underscore.js
-	*/
-	var isFunction = function(obj) {
-		return !!(obj && obj.constructor && obj.call && obj.apply); 
-	};
-
 	var defaultRules = {
 		required : {
 			'validateFunction' : function( value ){ return value.length; },
@@ -48,7 +41,7 @@ by Armel van Ravels and Dominique de Brabander
 			rules = defaultRules;
 		},
 		setDefaultSuccessCallback : function( fn ) {
-			if(isFunction(fn)){
+			if($.isFunction(fn)){
 				defaultSucces = fn;
 				for(rule in rules) {
 					methods.setSuccessCallback(rule, fn);
@@ -58,7 +51,7 @@ by Armel van Ravels and Dominique de Brabander
 			}
 		},
 		setDefaultErrorCallback : function( fn ) {
-			if(isFunction(fn)){
+			if($.isFunction(fn)){
 				defaultError = fn;
 				for(rule in rules) {
 					methods.setErrorCallback(rule, fn);
