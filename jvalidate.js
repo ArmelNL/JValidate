@@ -64,7 +64,7 @@ by Armel van Ravels and Dominique de Brabander
 			$(this).find("input, textarea").each(function(index, element){
 				for (prop in rules)
 				{
-					element.classList.contains(prop) && (rules[prop].validateFunction($(this).val()) ? rules[prop].successCallback(this) : rules[prop].errorCallback(this));
+					$(element).hasClass(prop) && (rules[prop].validateFunction($(this).val()) ? rules[prop].successCallback(this) : rules[prop].errorCallback(this));
 				}
 			});
 		},
