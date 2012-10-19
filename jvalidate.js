@@ -21,19 +21,19 @@ by Armel van Ravels and Dominique de Brabander
 		},
 		email : {
 			'validateFunction' : function( value ){
-				return /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(value);
+				return (/^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(value);
 			},
 			'errorCallback' : $.noop,
 			'successCallback' : $.noop
 		},
 		url : {
 			'validateFunction' : function( value ){
-				return /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);
+				return (/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/).test(value);
 			},
 			'errorCallback' : $.noop,
 			'successCallback' : $.noop
 		}
-	}
+	};
 
 	var rules = {};
 	var methods = {
@@ -43,7 +43,7 @@ by Armel van Ravels and Dominique de Brabander
 		setDefaultSuccessCallback : function( fn ) {
 			if($.isFunction(fn)){
 				defaultSucces = fn;
-				for(rule in rules) {
+				for(var rule in rules) {
 					methods.setSuccessCallback(rule, fn);
 				}	
 			}else{
@@ -53,7 +53,7 @@ by Armel van Ravels and Dominique de Brabander
 		setDefaultErrorCallback : function( fn ) {
 			if($.isFunction(fn)){
 				defaultError = fn;
-				for(rule in rules) {
+				for(var rule in rules) {
 					methods.setErrorCallback(rule, fn);
 				}
 			}else{
@@ -62,9 +62,17 @@ by Armel van Ravels and Dominique de Brabander
 		},
 		validate : function( options ) {
 			$(this).find("input, textarea").each(function(index, element){
-				for (prop in rules)
+				for (var prop in rules)
 				{
-					$(element).hasClass(prop) && (rules[prop].validateFunction($(this).val()) ? rules[prop].successCallback(this) : rules[prop].errorCallback(this));
+					if($(element).hasClass(prop))
+					{
+						if(rules[prop].validateFunction($(this).val()))
+						{
+							rules[prop].successCallback(this);
+						} else {
+							rules[prop].errorCallback(this);
+						}
+					} 
 				}
 			});
 		},
