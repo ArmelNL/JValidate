@@ -9,7 +9,8 @@ $(document).ready(function(){
     };
 
     $().JValidate('init');  //initializing default validating rules
-    $().JValidate('setDefaultSuccessCallback', setGreen); //default success setting 
+    $().JValidate('setClassPrefix', 'JV_'); // Set class prefix
+    $().JValidate('setDefaultSuccessCallback', setGreen); //default success setting
     $().JValidate('setDefaultErrorCallback', setRed);     //defailt error setting
 
     $().JValidate('addRule', 'numeric', function(n){return !isNaN(parseFloat(n)) && isFinite(n);});

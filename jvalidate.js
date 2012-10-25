@@ -12,6 +12,7 @@ by Armel van Ravels and Dominique de Brabander
 (function( $ ){
 	var defaultError;
 	var defaultSucces;
+	var classPrefix = '';
 
 	var defaultRules = {
 		required : {
@@ -37,15 +38,18 @@ by Armel van Ravels and Dominique de Brabander
 
 	var rules = {};
 	var methods = {
-		init : function( options ) { 
+		init : function( options ) {
 			rules = defaultRules;
+		},
+		setClassPrefix : function ( str ) {
+			prefix = typeof str === "string" ? str : "";
 		},
 		setDefaultSuccessCallback : function( fn ) {
 			if($.isFunction(fn)){
 				defaultSucces = fn;
 				for(var rule in rules) {
 					methods.setSuccessCallback(rule, fn);
-				}	
+				}
 			}else{
 				$.error(' JValidate, setDefaultSuccessCallback: Parameter must be of type \'function\' ');
 			}
@@ -64,7 +68,7 @@ by Armel van Ravels and Dominique de Brabander
 			$(this).find("input, textarea").each(function(index, element){
 				for (var prop in rules)
 				{
-					if($(element).hasClass(prop))
+					if($(element).hasClass(prefix + prop))
 					{
 						if(rules[prop].validateFunction($(this).val()))
 						{
@@ -72,7 +76,7 @@ by Armel van Ravels and Dominique de Brabander
 						} else {
 							rules[prop].errorCallback(this);
 						}
-					} 
+					}
 				}
 			});
 		},
@@ -86,7 +90,7 @@ by Armel van Ravels and Dominique de Brabander
 			var rule = {};
 			rule[name] = {
 				'validateFunction':validateFunction,
-				'errorCallback': errorCallback || defaultError || $.noop, 
+				'errorCallback': errorCallback || defaultError || $.noop,
 				'successCallback': successCallback || defaultSucces || $.noop
 			};
 			rules = $.extend(rule,rules);
@@ -106,7 +110,7 @@ by Armel van Ravels and Dominique de Brabander
 			return methods.init.apply( this, arguments );
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.JValidate' );
-		}    
+		}
 	};
 })( jQuery );
 
