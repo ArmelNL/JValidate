@@ -39,6 +39,9 @@ by Armel van Ravels and Dominique de Brabander
 		setClassPrefix : function ( str ) {
 			classPrefix = typeof str === "string" ? str : "";
 		},
+		getClassPrefix : function () {
+			return classPrefix;
+		},
 		setDefaultSuccessCallback : function( fn ) {
 			if($.isFunction(fn)){
 				defaultSucces = fn;
