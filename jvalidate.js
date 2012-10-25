@@ -10,11 +10,8 @@ by Armel van Ravels and Dominique de Brabander
 
 */
 (function( $ ){
-	var defaultError;
-	var defaultSucces;
-	var classPrefix = '';
-
-	var defaultRules = {
+	var defaultError, defaultSucces, classPrefix = '', rules = {},
+	defaultRules = {
 		required : {
 			'validateFunction' : function( value ){ return value.length; },
 			'errorCallback' : $.noop,
@@ -34,10 +31,8 @@ by Armel van Ravels and Dominique de Brabander
 			'errorCallback' : $.noop,
 			'successCallback' : $.noop
 		}
-	};
-
-	var rules = {};
-	var methods = {
+	},
+	methods = {
 		init : function( options ) {
 			rules = defaultRules;
 		},
