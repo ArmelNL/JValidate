@@ -37,7 +37,7 @@ by Armel van Ravels and Dominique de Brabander
 			rules = defaultRules;
 		},
 		setClassPrefix : function ( str ) {
-			prefix = typeof str === "string" ? str : "";
+			classPrefix = typeof str === "string" ? str : "";
 		},
 		setDefaultSuccessCallback : function( fn ) {
 			if($.isFunction(fn)){
@@ -63,7 +63,7 @@ by Armel van Ravels and Dominique de Brabander
 			$(this).find("input, textarea").each(function(index, element){
 				for (var prop in rules)
 				{
-					if($(element).hasClass(prefix + prop))
+					if($(element).hasClass(classPrefix + prop))
 					{
 						if(rules[prop].validateFunction($(this).val()))
 						{
