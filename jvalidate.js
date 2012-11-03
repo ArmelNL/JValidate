@@ -67,9 +67,6 @@ by Armel van Ravels and Dominique de Brabander
 			
 			// Load rules
 			this.reloadRules();
-
-			//if callback run validation imediately
-
 		},
 
 		addRule : function(name, validateFunction, errorCallback, successCallback){
