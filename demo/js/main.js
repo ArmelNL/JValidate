@@ -1,22 +1,34 @@
 $(document).ready(function(){
+    
     var setGreen = function(item)
     {
         $(item).removeClass("red").addClass("green");
     },
+    
     setRed = function(item)
     {
         $(item).removeClass("green").addClass("red");
-    };
+    },
 
-    $().JValidate('init');  //initializing default validating rules
-    $().JValidate('setClassPrefix', 'JV_'); // Set class prefix
-    $().JValidate('setDefaultSuccessCallback', setGreen); //default success setting
-    $().JValidate('setDefaultErrorCallback', setRed);     //defailt error setting
+    form = new $.JValidate( $('form'), {
+        
+        // Set the class prefix to jv_
+        prefix : 'JV_',
 
-    $().JValidate('addRule', 'numeric', function(n){return !isNaN(parseFloat(n)) && isFinite(n);});
+        // Set the defaultSuccess
+        defaultSuccess : setGreen,
 
-    $('a.naam').click(function(){
-        $('form').JValidate('validate'); //run validation
+        // Set the defaultError
+        defaultError : setRed
+
+    });
+
+    form.addRule('numeric', function(n){
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    });
+
+    $('a.naam').on('click', function(){
+        form.validate();
     });
 
 });

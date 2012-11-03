@@ -9,107 +9,175 @@
 by Armel van Ravels and Dominique de Brabander
 
 */
-(function( $ ){
-	var defaultError, defaultSucces, classPrefix = '', rules = {},
-	defaultRules = {
-		required : {
-			'validateFunction' : function( value ){ return value.length; },
-			'errorCallback' : $.noop,
-			'successCallback': $.noop
-		},
-		email : {
-			'validateFunction' : function( value ){
-				return (/^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(value);
+;(function ($, window, undefined) {
+
+	// universial name for our plugin wich we can use to make things easier. :)
+	var pluginName = '_JValidate';
+
+	// Plugin constructor.
+	$.JValidate = function (element, options, callback) {
+		this.element = element;
+		this.settings = $.extend({}, $.JValidate.defaults, options);
+		this.initialize(); // run the init
+	};
+	
+	// Plugin default settings.
+	$.JValidate.defaults = {
+		// Prefix that will be used for classes
+		prefix : '',
+
+		// Callback that will be run if the element is validated with a succes
+		// Default is a function that doesn't do anything
+		defaultSuccess : undefined,
+		
+		// Callback will be run if the element is validated with a fail
+		// Default is a function that doesn't do anything
+		defaultError : undefined,
+
+		// Default rules that our app will use for validating our forms
+		defaultRules : {
+			required : {
+				'validateFunction' : function( value ){
+					return value.length;
+				},
+				'errorCallback' : $.noop,
+				'successCallback': $.noop
 			},
-			'errorCallback' : $.noop,
-			'successCallback' : $.noop
-		},
-		url : {
-			'validateFunction' : function( value ){
-				return (/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/).test(value);
+			email : {
+				'validateFunction' : function( value ){
+					return (/^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(value);
+				},
+				'errorCallback' : $.noop,
+				'successCallback' : $.noop
 			},
-			'errorCallback' : $.noop,
-			'successCallback' : $.noop
+			url : {
+				'validateFunction' : function( value ){
+					return (/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/).test(value);
+				},
+				'errorCallback' : $.noop,
+				'successCallback' : $.noop
+			}
 		}
-	},
-	methods = {
-		init : function( options ) {
-			rules = defaultRules;
+	};
+	
+	// Plugin methods, defined on the prototype to reduce multiple function and closure creation. See -> https://developers.google.com/speed/articles/optimizing-javascript
+	$.JValidate.prototype = {
+
+		initialize : function (callback) {
+			
+			// Load rules
+			this.reloadRules();
+
+			//if callback run validation imediately
+
 		},
-		setClassPrefix : function ( str ) {
-			classPrefix = typeof str === "string" ? str : "";
+
+		addRule : function(name, validateFunction, errorCallback, successCallback){
+			
+			// Create a tempoary rule object
+			var rule = {};
+			
+			// Fill the temporary rule object
+			rule[name] = {
+				'validateFunction' : validateFunction || function () { return true; } ,
+				'errorCallback' : errorCallback || this.settings.defaultError || $.noop,
+				'successCallback' : successCallback || this.settings.defaultSuccess || $.noop
+			};
+
+			// Add the rule to the _rules object
+			this._rules = $.extend(rule, this._rules);
 		},
-		getClassPrefix : function () {
-			return classPrefix;
-		},
-		setDefaultSuccessCallback : function( fn ) {
-			if($.isFunction(fn)){
-				defaultSucces = fn;
-				for(var rule in rules) {
-					methods.setSuccessCallback(rule, fn);
-				}
-			}else{
-				$.error(' JValidate, setDefaultSuccessCallback: Parameter must be of type \'function\' ');
-			}
-		},
-		setDefaultErrorCallback : function( fn ) {
-			if($.isFunction(fn)){
-				defaultError = fn;
-				for(var rule in rules) {
-					methods.setErrorCallback(rule, fn);
-				}
-			}else{
-				$.error(' JValidate, setDefaultErrorCallback: Parameter must be of type \'function\' ');
-			}
-		},
-		validate : function( options ) {
-			$(this).find("input, textarea").each(function(index, element){
-				for (var prop in rules)
+
+		validate : function(){
+			var self = this;
+
+			$(this.element).find("input, textarea").each(function(index, ele){
+				for (var prop in self._rules)
 				{
-					if($(element).hasClass(classPrefix + prop))
+					if($(ele).hasClass(self.settings.prefix + prop))
 					{
-						if(rules[prop].validateFunction($(this).val()))
+						if(self._rules[prop].validateFunction($(this).val()))
 						{
-							rules[prop].successCallback(this);
+							self._rules[prop].successCallback(this);
 						} else {
-							rules[prop].errorCallback(this);
+							self._rules[prop].errorCallback(this);
 						}
 					}
 				}
 			});
 		},
-		setErrorCallback : function(name, errorCallback){
-			rules[name].errorCallback = errorCallback;
-		},
-		setSuccessCallback : function(name, successCallback){
-			rules[name].successCallback = successCallback;
-		},
-		addRule: function(name, validateFunction, errorCallback, successCallback){
-			var rule = {};
-			rule[name] = {
-				'validateFunction':validateFunction,
-				'errorCallback': errorCallback || defaultError || $.noop,
-				'successCallback': successCallback || defaultSucces || $.noop
-			};
-			rules = $.extend(rule,rules);
-		},
+
 		getRules : function(){
-			return rules;
+			return this._rules;
 		},
-		resetRules: function(){
-			rules = defaultRules;
+
+		reloadRules : function(){
+
+			// Copy the default rules into the rules
+			this._rules = this.settings.defaultRules;
+
+			//When there is set a defaultError or defaultSuccess apply them to the rules
+			for(var rule in this._rules)
+			{
+				this._rules[rule].errorCallback = this.settings.defaultError || $.noop;
+				this._rules[rule].successCallback = this.settings.defaultSuccess || $.noop;
+			}
+		},
+
+		setErrorCallback : function(name, errorCallback){
+			if($.isFunction(errorCallback)) {
+				this._rules[name].errorCallback = errorCallback;
+			}
+		},
+
+		setSuccessCallback : function(name, successCallback){
+			if($.isFunction(successCallback)) {
+				this._rules[name].successCallback = successCallback;
+			}
 		}
+	};
+	
+	$.fn.JValidate = function (argument, callback) {
+		// check if a possible methodname is passed
+		if (typeof argument === 'string') {
+			// convert our function arguments to a actual array
+			var args = Array.prototype.slice.call(arguments, 1);
+			// iterate over each element in our collection
+			this.each(function () {
+				// get our current instance
+				var instance = $.data(this, pluginName);
+				// if no instance is found throw a error
+				if (! instance) {
+					$.error('Cannot call methods prior to initialization');
+					return;
+				}
+				// if a instance is found but no method exist throw a error
+				if (! $.isFunction(instance[argument])) {
+					$.error('Method not found');
+					return;
+				}
+				// if above passes call the supplied method on our instance
+				instance[args].apply(instance, args);
+			});
+		} else {
+			// iterate over each element in our collection
+			this.each(function() {
+				// get our current instance
+				var instance = $.data(this, pluginName);
+				// if a instance is found update our settings and call the init
+				if (instance) {
+					$.settings = $.extend(true, this.settings, argument);
+					instance.initialize(callback);
+				} else {
+					// initialize new instance
+					$.data(this, pluginName, new $.JValidate(argument, this, callback));
+				}
+			});
+		}
+		// return jQuery so our methods dont have to
+		return this;
 	};
 
-	$.fn.JValidate = function( method ) {
-		if ( methods[method] ) {
-			return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-		} else if ( typeof method === 'object' || ! method ) {
-			return methods.init.apply( this, arguments );
-		} else {
-			$.error( 'Method ' +  method + ' does not exist on jQuery.JValidate' );
-		}
-	};
-})( jQuery );
+}(jQuery, this));
 
 
