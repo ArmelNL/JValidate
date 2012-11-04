@@ -64,13 +64,11 @@ by Armel van Ravels and Dominique de Brabander
 	$.JValidate.prototype = {
 
 		initialize : function (callback) {
-			
 			// Load rules
 			this.reloadRules();
 		},
 
 		addRule : function(name, validateFunction, errorCallback, successCallback){
-			
 			// Create a tempoary rule object
 			var rule = {};
 			
@@ -86,6 +84,7 @@ by Armel van Ravels and Dominique de Brabander
 		},
 
 		validate : function(){
+			// Save refference of this
 			var self = this;
 
 			$(this.element).find("input, textarea").each(function(index, ele){
@@ -109,7 +108,6 @@ by Armel van Ravels and Dominique de Brabander
 		},
 
 		reloadRules : function(){
-
 			// Copy the default rules into the rules
 			this._rules = this.settings.defaultRules;
 
@@ -134,47 +132,6 @@ by Armel van Ravels and Dominique de Brabander
 		}
 	};
 	
-	$.fn.JValidate = function (argument, callback) {
-		// check if a possible methodname is passed
-		if (typeof argument === 'string') {
-			// convert our function arguments to a actual array
-			var args = Array.prototype.slice.call(arguments, 1);
-			// iterate over each element in our collection
-			this.each(function () {
-				// get our current instance
-				var instance = $.data(this, pluginName);
-				// if no instance is found throw a error
-				if (! instance) {
-					$.error('Cannot call methods prior to initialization');
-					return;
-				}
-				// if a instance is found but no method exist throw a error
-				if (! $.isFunction(instance[argument])) {
-					$.error('Method not found');
-					return;
-				}
-				// if above passes call the supplied method on our instance
-				instance[args].apply(instance, args);
-			});
-		} else {
-			// iterate over each element in our collection
-			this.each(function() {
-				// get our current instance
-				var instance = $.data(this, pluginName);
-				// if a instance is found update our settings and call the init
-				if (instance) {
-					$.settings = $.extend(true, this.settings, argument);
-					instance.initialize(callback);
-				} else {
-					// initialize new instance
-					$.data(this, pluginName, new $.JValidate(argument, this, callback));
-				}
-			});
-		}
-		// return jQuery so our methods dont have to
-		return this;
-	};
-
 }(jQuery, this));
 
 
