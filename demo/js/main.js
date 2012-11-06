@@ -21,9 +21,7 @@ $(document).ready(function(){
         // Set the defaultError
         defaultError : setRed
 
-    });
-
-    form.addRule('numeric', function(n){
+    }).addRule('numeric', function(n){
         return !isNaN(parseFloat(n)) && isFinite(n);
     });
 

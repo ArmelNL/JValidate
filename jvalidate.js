@@ -66,6 +66,7 @@ by Armel van Ravels and Dominique de Brabander
 		initialize : function (callback) {
 			// Load rules
 			this.reloadRules();
+			return this;
 		},
 
 		addRule : function(name, validateFunction, errorCallback, successCallback){
@@ -81,6 +82,8 @@ by Armel van Ravels and Dominique de Brabander
 
 			// Add the rule to the _rules object
 			this._rules = $.extend(rule, this._rules);
+
+			return this;
 		},
 
 		validate : function(){
@@ -101,6 +104,8 @@ by Armel van Ravels and Dominique de Brabander
 					}
 				}
 			});
+
+			return this;
 		},
 
 		getRules : function(){
@@ -117,18 +122,24 @@ by Armel van Ravels and Dominique de Brabander
 				this._rules[rule].errorCallback = this.settings.defaultError || $.noop;
 				this._rules[rule].successCallback = this.settings.defaultSuccess || $.noop;
 			}
+
+			return this;
 		},
 
 		setErrorCallback : function(name, errorCallback){
 			if($.isFunction(errorCallback)) {
 				this._rules[name].errorCallback = errorCallback;
 			}
+
+			return this;
 		},
 
 		setSuccessCallback : function(name, successCallback){
 			if($.isFunction(successCallback)) {
 				this._rules[name].successCallback = successCallback;
 			}
+
+			return this;
 		}
 	};
 	
