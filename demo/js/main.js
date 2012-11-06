@@ -21,8 +21,8 @@ $(document).ready(function(){
         // Set the defaultError
         defaultError : setRed
 
-    }).addRule('numeric', function(n){
-        return !isNaN(parseFloat(n)) && isFinite(n);
+    }).addRule('RGB', function(value){
+        return (/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/).test(value);
     });
 
     $('a.naam').on('click', function(){

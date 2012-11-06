@@ -56,6 +56,13 @@ by Armel van Ravels and Dominique de Brabander
 				},
 				'errorCallback' : $.noop,
 				'successCallback' : $.noop
+			},
+			numeric : {
+				'validateFunction' : function ( value ){
+					return !isNaN(parseFloat(value)) && isFinite(value);
+				},
+				'errorCallback' : $.noop,
+				'successCallback' : $.noop
 			}
 		}
 	};
