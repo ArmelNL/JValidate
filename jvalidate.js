@@ -93,9 +93,11 @@ by Armel van Ravels and Dominique de Brabander
 			return this;
 		},
 
-		validate : function(){
+		validate : function( callback ){
 			// Save refference of this
-			var self = this;
+			var self = this,
+				failed = [], //all failed elements go into this array
+				passed = []; //all passed elements go into this array
 
 			$(this.element).find("input, textarea").each(function(index, ele){
 				for (var prop in self._rules)
@@ -104,13 +106,24 @@ by Armel van Ravels and Dominique de Brabander
 					{
 						if(self._rules[prop].validateFunction($(this).val()))
 						{
+							passed.push($(ele)); // put all elements that are successfull passed the validateFunction in an array
+
 							self._rules[prop].successCallback(this);
 						} else {
+
+							failed.push($(ele)); // put all elements that failed to pass the validateFunction in a different array
+
 							self._rules[prop].errorCallback(this);
 						}
 					}
 				}
 			});
+
+			// Run the callback function
+			if($.isFunction(callback))
+			{
+				callback(failed, passed);
+			}
 
 			return this;
 		},
